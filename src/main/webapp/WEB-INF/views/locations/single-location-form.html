@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>Location</title>
+</head>
+<body>
+<div class="container">
+    <h3>Location Directory</h3>
+    <hr>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>id</th>
+            <th>Location name</th>
+            <th>Working hours</th>
+            <th>Type of establishment</th>
+            <th>Address</th>
+            <th>Description</th>
+            <th>Capacity people</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td th:text="${location.id}"/>
+            <td th:text="${location.title}"/>
+            <td th:text="${location.workingHours}"/>
+            <td th:text="${location.type}"/>
+            <td th:text="${location.address}"/>
+            <td th:text="${location.description}"/>
+            <td th:text="${location.capacityPeople}"/>
+        </tr>
+        </tbody>
+    </table>
+    <hr>
+    <a th:href="@{/locations/list}">Back to location table</a>
+</div>
+</body>
+</html>

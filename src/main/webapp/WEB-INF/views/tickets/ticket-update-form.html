@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>Update Ticket</title>
+</head>
+<body>
+    <div class="container">
+        <h3>Ticket Directory</h3>
+        <hr>
+
+        <p class="h4 mb-4">Update Ticket</p>
+
+        <form action="#" th:action="@{/tickets/save}"
+              th:object="${ticket}" method="POST">
+
+            <input type="hidden" th:field="*{id}" >
+            <input type="text" th:field="*{eventName}"
+                   class="form-control mb-4 col-4" placeholder="Event name">
+            <input type="text" th:field="*{uniqueCode}"
+                   class="form-control mb-4 col-4" placeholder="Unique code">
+            <input type="datetime-local" th:field="*{creationDate}"
+                   class="form-control mb-4 col-4" placeholder="Creation date">
+            <input type="text" th:field="*{status}"
+                   class="form-control mb-4 col-4" placeholder="Status">
+            <input type="number" th:field="*{userId}"
+                   class="form-control mb-4 col-4" placeholder="User id">
+            <input type="number" th:field="*{eventId}"
+                   class="form-control mb-4 col-4" placeholder="Event id">
+
+            <button type="submit" class="btn btn-info col-2">Update</button>
+        </form>
+
+        <hr>
+        <a th:href="@{/tickets/list}">Back to ticket table</a>
+    </div>
+</body>
+</html>
+
