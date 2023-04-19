@@ -1,5 +1,6 @@
 package dev.yudin.configs;
 
+import dev.yudin.exceptions.AppConfigurationException;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,27 +29,7 @@ public class InitDB {
 	}
 
 	@PostConstruct
-	public void init() throws SQLException {
-	//todo try to solve problem with force
-//		PreparedStatement statement = null;
-//		try (Connection conn = adminDataSource.getConnection()) {
-//			statement = conn.prepareStatement(
-//					"SELECT 'CREATE DATABASE eventholderdb'\n" +
-//					"WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'eventholderdb')");
-//
-//
-//			var isExist = statement.execute();
-//			if (isExist == 0) {
-//				statement = conn.prepareStatement("create database eventholderdb");
-//				statement.executeUpdate();
-//			}
-//		} finally {
-//			Objects.requireNonNull(statement).close();
-//		}
-		//todo perfect picture run scripts like this
-//		runScript(adminDataSource, "createDBlink.sql");
-//		runScript(adminDataSource, "createDB.sql");
-
+	public void init() {
 		runScript(dataSource, "createTables.sql");
 		runScript(dataSource, "populateTables.sql");
 	}
@@ -59,7 +40,7 @@ public class InitDB {
 			InputStreamReader reader = new InputStreamReader(getFileFromResourceFolder(fileName));
 			runner.runScript(reader);
 		} catch (SQLException ex) {
-			throw new RuntimeException("Could not get connection", ex);
+			throw new AppConfigurationException("Could not get connection", ex);
 		}
 	}
 
@@ -67,7 +48,7 @@ public class InitDB {
 		ClassLoader classLoader = getClass().getClassLoader();
 		InputStream inputStream = classLoader.getResourceAsStream(fileName);
 		if (inputStream == null) {
-			throw new RuntimeException("file not found! " + fileName);
+			throw new AppConfigurationException("file not found! " + fileName);
 		} else {
 			return inputStream;
 		}

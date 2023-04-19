@@ -2,6 +2,7 @@ package dev.yudin.configs;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import dev.yudin.exceptions.AppConfigurationException;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -22,16 +24,18 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import java.beans.PropertyVetoException;
+import java.io.IOException;
 import java.util.Properties;
 import javax.sql.DataSource;
 
-@Configuration
 @EnableWebMvc
+@EnableTransactionManagement
 @ComponentScan(basePackages = "dev.yudin")
 @PropertySources({
 		@PropertySource("classpath:jdbc-connection-postgresql.properties"),
 		@PropertySource("classpath:admin-jdbc-connection-postgresql.properties")
 })
+@Configuration
 public class AppConfig implements WebMvcConfigurer {
 	@Autowired
 	private Environment propertyDataHolder;
@@ -69,18 +73,6 @@ public class AppConfig implements WebMvcConfigurer {
 		resolver.setTemplateEngine(templateEngine());
 		registry.viewResolver(resolver);
 	}
-
-//    @Bean
-//    public ViewResolver viewResolver() {
-//
-//        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-//
-//        viewResolver.setPrefix("/WEB-INF/views/");
-//        viewResolver.setSuffix(".jsp");
-//        viewResolver.setOrder(2);
-//
-//        return viewResolver;
-//    }
 
 	@Bean
 	public DataSource dataSource() {
@@ -122,30 +114,27 @@ public class AppConfig implements WebMvcConfigurer {
 	}
 
 	@Bean
-	public LocalSessionFactoryBean sessionFactory() {
+	public SessionFactory sessionFactory() throws IOException {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource());
 		sessionFactory.setPackagesToScan("dev.yudin");
 		sessionFactory.setHibernateProperties(hibernateProperties());
-		return sessionFactory;
+		sessionFactory.afterPropertiesSet();
+		return sessionFactory.getObject();
 	}
 
 	private Properties hibernateProperties() {
-		Properties hibernateProperties = new Properties();
-		hibernateProperties.setProperty(
-				"hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-		hibernateProperties.setProperty(
-				"hibernate.show_sql", "true");
-//		<prop key="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.WeblogicJtaPlatform</prop>
-//		hibernateProperties.setProperty("hibernate.transaction.jta.platform", "org.hibernate.service.jta.platform.internal.WeblogicJtaPlatform");
-		return hibernateProperties;
+		Properties prop = new Properties();
+		prop.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+		prop.put("hibernate.show_sql", true);
+		return prop;
 	}
 
 	@Bean
-	public HibernateTransactionManager transactionManager() {
-		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-		transactionManager.setSessionFactory(sessionFactory().getObject());
-		return transactionManager;
+	public HibernateTransactionManager transactionManager() throws IOException {
+		var manager =  new HibernateTransactionManager();
+		manager.setSessionFactory(sessionFactory());
+		return manager;
 	}
 
 	@Bean
@@ -153,4 +142,3 @@ public class AppConfig implements WebMvcConfigurer {
 		return new JdbcTemplate(dataSource());
 	}
 }
-
