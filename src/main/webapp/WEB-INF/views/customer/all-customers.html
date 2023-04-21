@@ -16,7 +16,7 @@
     <h3>Customer Table</h3>
     <hr>
 
-    <a th:href="@{/categories/showFormForAdd}"
+    <a th:href="@{/customer/formForAddNewCustomer}"
        class="btn btn-primary btn-sm mb-3">
         Add new Customer
     </a>
@@ -36,7 +36,7 @@
             <td th:text="${customer.firstName}"/> <!--   first column         -->
             <td th:text="${customer.lastName}"/>  <!--   second column         -->
             <td th:text="${customer.email}"/>  <!--   third column         -->
-            <td> <!--   fourth column         -->
+            <td>                                <!--   fourth column         -->
                 <a th:href="@{/customer/formForUpdate(customerId=${customer.id})}"
                    class="btn btn-info btn-sm">
                     Update

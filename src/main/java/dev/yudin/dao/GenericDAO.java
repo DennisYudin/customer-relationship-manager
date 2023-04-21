@@ -6,23 +6,12 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface GenericDAO<T> {
+    T getById(int id);
 
-    T getById(long id);
-
-    List<T> findAll(Pageable pageable);
+    List<T> findAll();
 
     void save(T t);
 
-    void delete(long id);
-
-    default boolean doesExist(long id) {
-        boolean valueExist = true;
-        try {
-            getById(id);
-        } catch (DataNotFoundException ex) {
-            valueExist = false;
-        }
-        return valueExist;
-    }
+    void delete(int id);
 }
 

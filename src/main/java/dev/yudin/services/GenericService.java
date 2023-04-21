@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface GenericService<T> {
 
-    T getById(long id);
+    T getById(int id);
 
-    List<T> findAll(Pageable pageable);
+    List<T> findAll();
 
     void save(T t);
 
-    void delete(long id);
+    void delete(int id);
 }
 

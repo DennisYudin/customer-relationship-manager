@@ -1,15 +1,9 @@
 package dev.yudin.dao;
 
-import java.util.List;
+import dev.yudin.entities.Customer;
 
-public interface CustomerDAO<T> {
+public interface CustomerDAO extends GenericDAO<Customer> {
 
-    T getBy(long id);
 
-    List<T> findAll();
-
-    void save(T t);
-
-    void delete(long id);
 }
 

@@ -1,17 +1,9 @@
 package dev.yudin.services;
 
 
+import dev.yudin.entities.Customer;
 
-import java.util.List;
+public interface CustomerService extends GenericService<Customer> {
 
-public interface CustomerService<T> {
-
-    T getBy(long id);
-
-    List<T> findAll();
-
-    void save(T t);
-
-    void delete(long id);
 }
 

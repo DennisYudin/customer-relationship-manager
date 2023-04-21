@@ -10,12 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 @Log4j
 @Repository("customerDAO")
 public class CustomerDAOImpl implements CustomerDAO {
-
 
 	private SessionFactory sessionFactory;
 
@@ -25,27 +22,36 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public Object getBy(long id) {
-		return null;
+	public Customer getById(int id) {
+		var session = sessionFactory.getCurrentSession();
+		return session.get(Customer.class, id);
 	}
-
 
 	@Override
 	public List<Customer> findAll() {
 		var session = sessionFactory.getCurrentSession();
 
-		Query<Customer> query = session.createQuery("from Customer", Customer.class);
+		Query<Customer> query = session.createQuery(
+				"FROM Customer ORDER BY lastName",
+				Customer.class);
 
 		return query.getResultList();
 	}
 
 	@Override
-	public void save(Object o) {
+	public void save(Customer customer) {
+		var session = sessionFactory.getCurrentSession();
 
+		session.saveOrUpdate(customer);
 	}
 
 	@Override
-	public void delete(long id) {
+	public void delete(int id) {
+		var session = sessionFactory.getCurrentSession();
 
+		Query query = session.createQuery("DELETE FROM Customer WHERE id=:customerId");
+		query.setParameter("customerId", id);
+
+		query.executeUpdate();
 	}
 }
