@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.util.Properties;
 import javax.sql.DataSource;
 
+@EnableAspectJAutoProxy
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan(basePackages = "dev.yudin")
@@ -95,20 +97,6 @@ public class AppConfig implements WebMvcConfigurer {
 		dataSource.setMinPoolSize(5);
 		dataSource.setMaxPoolSize(20);
 		dataSource.setMaxIdleTime(30_000);
-		return dataSource;
-	}
-
-	@Bean
-	public DataSource adminDataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		String jdbcDriver = propertyDataHolder.getProperty("admin.jdbc.driver");
-		String jdbcUrl = propertyDataHolder.getProperty("admin.jdbc.url");
-		String jdbcUser = propertyDataHolder.getProperty("admin.jdbc.user");
-		String jdbcPassword = propertyDataHolder.getProperty("admin.jdbc.password");
-		dataSource.setDriverClassName(jdbcDriver);
-		dataSource.setUrl(jdbcUrl);
-		dataSource.setUsername(jdbcUser);
-		dataSource.setPassword(jdbcPassword);
 		return dataSource;
 	}
 
