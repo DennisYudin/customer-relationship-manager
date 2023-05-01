@@ -4,15 +4,13 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import dev.yudin.exceptions.AppConfigurationException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -32,23 +30,18 @@ import javax.sql.DataSource;
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan(basePackages = "dev.yudin")
-@PropertySources({
-		@PropertySource("classpath:jdbc-connection-postgresql.properties"),
-		@PropertySource("classpath:admin-jdbc-connection-postgresql.properties")
-})
+@PropertySource("classpath:jdbc-connection-postgresql.properties")
 @Configuration
 public class AppConfig implements WebMvcConfigurer {
 	@Autowired
 	private Environment propertyDataHolder;
-	@Autowired
-	private ApplicationContext applicationContext;
 
 	@Bean
 	public SpringResourceTemplateResolver templateResolver() {
 
 		SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
 
-		templateResolver.setApplicationContext(applicationContext);
+		templateResolver.setApplicationContext(new AnnotationConfigApplicationContext());
 		templateResolver.setPrefix("/WEB-INF/views/");
 		templateResolver.setSuffix(".html");
 
@@ -119,7 +112,7 @@ public class AppConfig implements WebMvcConfigurer {
 
 	@Bean
 	public HibernateTransactionManager transactionManager() throws IOException {
-		var manager =  new HibernateTransactionManager();
+		var manager = new HibernateTransactionManager();
 		manager.setSessionFactory(sessionFactory());
 		return manager;
 	}
